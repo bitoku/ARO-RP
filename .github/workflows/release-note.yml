@@ -23,15 +23,15 @@ jobs:
 
           cat <<EOF > $CHANGELOG
           ## What's Changed
-          
+
           $(git log --oneline --no-decorate -n 10 $PREVIOUS_TAG..$CURRENT_TAG)
-          
-          **Full Changelog**: https://github.com/Azure/ARO-RP/compare/$PREVIOUS_TAG...$CURRENT_TAG"
+
+          **Full Changelog**: https://github.com/Azure/ARO-RP/compare/$PREVIOUS_TAG...$CURRENT_TAG
           EOF
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           body_path: ${{ github.workspace }}/CHANGELOG.txt
-          name: Release ${{ github.ref }}
+          name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
