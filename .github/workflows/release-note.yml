@@ -17,16 +17,19 @@ jobs:
           fetch-depth: 0
       - name: Generate Changelog
         run: |
-          CURRENT_TAG=$(git describe --tags --abbrev=0)
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 $CURRENT_TAG^)
+          CURRENT_TAG=$(git describe --abbrev=0)
+          PREVIOUS_TAG=$(git describe --abbrev=0 $CURRENT_TAG^)
           CHANGELOG=${{ github.workspace }}/CHANGELOG.txt
 
           cat <<EOF > $CHANGELOG
-          ## What's Changed
+          $(git tag -l --format='%(contents)' $CURRENT_TAG)
 
-          $(git log --oneline --no-decorate -n 10 $PREVIOUS_TAG..$CURRENT_TAG)
+          <details><summary><b>Changes</b></summary>
+
+          $(git log --oneline --no-decorate $PREVIOUS_TAG..$CURRENT_TAG)
 
           **Full Changelog**: https://github.com/Azure/ARO-RP/compare/$PREVIOUS_TAG...$CURRENT_TAG
+          </details>
           EOF
       - name: Release
         uses: softprops/action-gh-release@v1
