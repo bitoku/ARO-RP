@@ -1,0 +1,37 @@
+name: release-note
+on:
+  push:
+    tags:
+      - v*
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Generate Changelog
+        run: |
+          CURRENT_TAG=$(git describe --tags --abbrev=0)
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 $CURRENT_TAG^)
+          CHANGELOG=${{ github.workspace }}/CHANGELOG.txt
+
+          cat <<EOF > $CHANGELOG
+          ## What's Changed
+          
+          $(git log --oneline --no-decorate -n 10 $PREVIOUS_TAG..$CURRENT_TAG)
+          
+          **Full Changelog**: https://github.com/Azure/ARO-RP/compare/$PREVIOUS_TAG...$CURRENT_TAG"
+          EOF
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: ${{ github.workspace }}/CHANGELOG.txt
+          name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
