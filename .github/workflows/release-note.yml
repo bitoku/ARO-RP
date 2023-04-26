@@ -17,6 +17,8 @@ jobs:
           fetch-depth: 0
       - name: Generate Changelog
         run: |
+          git describe --abbrev=0
+          git describe --tags --abbrev=0
           CURRENT_TAG=$(git describe --abbrev=0)
           PREVIOUS_TAG=$(git describe --abbrev=0 $CURRENT_TAG^)
           CHANGELOG=${{ github.workspace }}/CHANGELOG.txt
