@@ -153,7 +153,7 @@ func provider(platform *azure.Platform, mpool *azure.MachinePool, osImage string
 		OSDisk: machineapi.OSDisk{
 			OSType:     "Linux",
 			DiskSizeGB: mpool.OSDisk.DiskSizeGB,
-			ManagedDisk: machineapi.ManagedDiskParameters{
+			ManagedDisk: machineapi.OSDiskManagedDiskParameters{
 				StorageAccountType: mpool.OSDisk.DiskType,
 				DiskEncryptionSet:  diskEncryptionSet,
 			},
@@ -166,6 +166,7 @@ func provider(platform *azure.Platform, mpool *azure.MachinePool, osImage string
 		NetworkResourceGroup: networkResourceGroup,
 		PublicLoadBalancer:   publicLB,
 		SecurityProfile:      securityProfile,
+		Diagnostics:          mpool.Diagnostics,
 	}
 
 	if platform.CloudName == azure.StackCloud {

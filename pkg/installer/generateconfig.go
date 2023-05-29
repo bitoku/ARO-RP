@@ -8,6 +8,7 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"fmt"
+	"github.com/openshift/api/machine/v1beta1"
 	"strings"
 
 	"github.com/Azure/go-autorest/autorest/azure"
@@ -155,6 +156,14 @@ func (m *manager) generateInstallConfig(ctx context.Context) (*installconfig.Ins
 							DiskEncryptionSetID: m.oc.Properties.MasterProfile.DiskEncryptionSetID,
 							DiskSizeGB:          1024,
 							DiskType:            computeskus.SupportedOSDisk(masterSKU),
+						},
+						Diagnostics: v1beta1.AzureDiagnostics{
+							Boot: &v1beta1.AzureBootDiagnostics{
+								StorageAccountType: v1beta1.CustomerManagedAzureDiagnosticsStorage,
+								CustomerManaged: &v1beta1.AzureCustomerManagedBootDiagnostics{
+									StorageAccountURI: "test",
+								},
+							},
 						},
 					},
 				},

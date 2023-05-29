@@ -1,5 +1,7 @@
 package azure
 
+import "github.com/openshift/api/machine/v1beta1"
+
 // MachinePool stores the configuration for a machine pool installed
 // on Azure.
 type MachinePool struct {
@@ -24,6 +26,8 @@ type MachinePool struct {
 	//
 	// +optional
 	OSDisk `json:"osDisk"`
+
+	Diagnostics v1beta1.AzureDiagnostics `json:"diagnostics,omitempty"`
 }
 
 // OSDisk defines the disk for machines on Azure.
