@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"k8s.io/utils/pointer"
 	"net/http"
 
 	mgmtcompute "github.com/Azure/azure-sdk-for-go/services/compute/mgmt/2020-06-01/compute"
@@ -37,6 +38,7 @@ type AzureActions interface {
 	VMSerialConsole(ctx context.Context, w http.ResponseWriter, log *logrus.Entry, vmName string) error
 	AppLensGetDetector(ctx context.Context, detectorId string) ([]byte, error)
 	AppLensListDetectors(ctx context.Context) ([]byte, error)
+	SetBootDiagnostics(ctx context.Context, vmName string, storageAccountUri string) error
 }
 
 type azureActions struct {
@@ -89,6 +91,26 @@ func NewAzureActions(log *logrus.Entry, env env.Interface, oc *api.OpenShiftClus
 		networkInterfaces:  network.NewInterfacesClient(env.Environment(), subscriptionDoc.ID, fpAuth),
 		appLens:            appLensClient,
 	}, nil
+}
+
+func (a *azureActions) SetBootDiagnostics(ctx context.Context, vmName string, storageAccountUri string) error {
+	a.log.Infof("START")
+	clusterRGName := stringutils.LastTokenByte(a.oc.Properties.ClusterProfile.ResourceGroupID, '/')
+	vm, err := a.virtualMachines.Get(ctx, clusterRGName, vmName, mgmtcompute.InstanceView)
+	if err != nil {
+		return err
+	}
+	a.log.Infof("MIDDLE %s", storageAccountUri)
+	diag := mgmtcompute.DiagnosticsProfile{
+		BootDiagnostics: &mgmtcompute.BootDiagnostics{
+			Enabled:    pointer.Bool(true),
+			StorageURI: pointer.String(storageAccountUri),
+		},
+	}
+	vm.DiagnosticsProfile = &diag
+
+	a.log.Infof("VM %#v", vm)
+	return a.virtualMachines.CreateOrUpdateAndWait(ctx, clusterRGName, vmName, vm)
 }
 
 func (a *azureActions) VMRedeployAndWait(ctx context.Context, vmName string) error {

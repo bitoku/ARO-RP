@@ -336,6 +336,8 @@ func (f *frontend) chiAuthenticatedRoutes(router chi.Router) {
 				r.Post("/cordonnode", f.postAdminOpenShiftClusterCordonNode)
 
 				r.Post("/drainnode", f.postAdminOpenShiftClusterDrainNode)
+
+				r.Post("/serialconsole", f.postAdminOpenShiftClusterSerialConsole)
 			})
 		})
 
