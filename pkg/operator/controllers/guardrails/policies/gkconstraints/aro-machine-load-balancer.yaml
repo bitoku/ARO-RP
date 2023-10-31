@@ -1,0 +1,11 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: ARODenyMachineLoadBalancer
+metadata:
+  name: aro-machine-load-balancer
+spec:
+  enforcementAction: {{.Enforcement}}
+  match:
+    namespaces: ["openshift-machine-api"]
+    kinds:
+      - apiGroups: ["machine.openshift.io"]
+        kinds: ["MachineSet"]

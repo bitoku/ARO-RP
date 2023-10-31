@@ -1,0 +1,27 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: arodenymachineloadbalancer
+  annotations:
+    metadata.gatekeeper.sh/title: "Machine Load Balancer"
+    metadata.gatekeeper.sh/version: 1.0.0
+    description: >-
+      Disallows modifying machine load balancer.
+spec:
+  crd:
+    spec:
+      names:
+        kind: ARODenyMachineLoadBalancer
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          type: object
+          description: >-
+            Disallows modifying machine load balancer.
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+{{ file.Read "gktemplates-src/aro-deny-machine-load-balancer/src.rego" | strings.Indent 8 | strings.TrimSuffix "\n" }}
+      libs:
+        - |
+{{ file.Read "gktemplates-src/library/common.rego" | strings.Indent 10 | strings.TrimSuffix "\n" }}

@@ -1,0 +1,27 @@
+kind: Suite
+apiVersion: test.gatekeeper.sh/v1alpha1
+metadata:
+  name: machine-load-balancer
+tests:
+  - name: machine-loadbalancer
+    template: ../../gktemplates/aro-deny-machine-load-balancer.yaml
+    constraint: ../../gkconstraints-test/aro-machine-load-balancer.yaml
+    cases:
+      - name: not-allowed-create-machineset
+        object: gator-test/not_allowed_create_machineset.yaml
+        assertions:
+          - violations: yes
+            message: internalLoadBalancer must not be set.
+      - name: not-allowed-update-machineset
+        object: gator-test/not_allowed_update_machineset.yaml
+        assertions:
+          - violations: yes
+            message: internalLoadBalancer must not be set.
+      - name: allowed-create-machineset
+        object: gator-test/allowed_create_machineset.yaml
+        assertions:
+          - violations: no
+      - name: allowed-update-machineset
+        object: gator-test/allowed_update_machineset.yaml
+        assertions:
+          - violations: no

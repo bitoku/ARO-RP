@@ -1,0 +1,78 @@
+apiVersion: admission.k8s.io/v1
+kind: AdmissionReview
+request:
+  dryRun: true
+  name: demo
+  kind:
+    group: "machine.openshift.io"
+    kind: MachineSet
+    version: v1beta1
+  object:
+    apiVersion: machine.openshift.io/v1beta1
+    kind: MachineSet
+    metadata:
+      name: worker
+      namespace: openshift-machine-api
+      labels:
+        machine.openshift.io/cluster-api-cluster: testCluster
+        machine.openshift.io/cluster-api-machine-role: worker
+        machine.openshift.io/cluster-api-machine-type: worker
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          machine.openshift.io/cluster-api-cluster: testCluster
+          machine.openshift.io/cluster-api-machineset: worker
+      template:
+        metadata:
+          labels:
+            machine.openshift.io/cluster-api-cluster: testCluster
+            machine.openshift.io/cluster-api-machine-role: worker
+            machine.openshift.io/cluster-api-machine-type: worker
+            machine.openshift.io/cluster-api-machineset: worker
+        spec:
+          providerSpec:
+            value:
+              osDisk:
+                diskSizeGB: 128
+                managedDisk:
+                  storageAccountType: Premium_LRS
+                osType: Linux
+              networkResourceGroup: networkrg
+              internalLoadBalancer: testCluster-internal
+              publicLoadBalancer: testCluster
+              userDataSecret:
+                name: worker-user-data
+              vnet: testvnet
+              credentialsSecret:
+                name: azure-cloud-credentials
+                namespace: openshift-machine-api
+              zone: "3"
+              publicIP: false
+              resourceGroup: rg
+              kind: AzureMachineProviderSpec
+              location: eastus
+              vmSize: Standard_D2s_v3
+              image:
+                offer: aro4
+                publisher: azureopenshift
+                resourceID: ""
+                sku: aro_410
+                version: 410.84.20220125
+              subnet: workersubnet
+              apiVersion: machine.openshift.io/v1beta1
+  oldObject: null
+  operation: CREATE
+  options: null
+  requestKind:
+    group: "machine.openshift.io"
+    kind: MachineSet
+    version: v1beta1
+  resource:
+    group: "machine.openshift.io"
+    resource: MachineSet
+    version: v1beta1
+  uid: 7ec7e318-9050-48da-ab47-57f7146115d7
+  userInfo:
+    uid: 645c3023-3e99-4dbe-be9e-887be38ebed0
+    username: test-user
