@@ -1,8 +1,14 @@
 package arodenymachineloadbalancer
 
-violation[{"msg": msg}] {
+import future.keywords.in
 
-  input.review.object.spec.template.spec.providerSpec.value.internalLoadBalancer != ""
+violation[{"msg": msg}] {
+  ilb = input.review.object.spec.template.spec.providerSpec.value.internalLoadBalancer
+  ilb != ""
   msg := "internalLoadBalancer must not be set."
+} {
+  plb = input.review.object.spec.template.spec.providerSpec.value.publicLoadBalancer
+  not plb in {"", input.parameters.loadBalancerName}
+  msg := "publicLoadBalancer must be the default or empty"
 }
 

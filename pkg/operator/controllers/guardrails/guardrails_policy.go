@@ -54,14 +54,15 @@ func (r *Reconciler) ensurePolicy(ctx context.Context, fs embed.FS, path string)
 
 	creates := make([]kruntime.Object, 0)
 	buffer := new(bytes.Buffer)
+	policyConfig := &config.GuardRailsPolicyConfig{
+		InfraID: instance.Spec.InfraID,
+	}
 	for _, templ := range template.Templates() {
 		managed, enforcement, err := r.getPolicyConfig(ctx, instance, templ.Name())
 		if err != nil {
 			return err
 		}
-		policyConfig := &config.GuardRailsPolicyConfig{
-			Enforcement: enforcement,
-		}
+		policyConfig.Enforcement = enforcement
 		err = templ.Execute(buffer, policyConfig)
 		if err != nil {
 			return err

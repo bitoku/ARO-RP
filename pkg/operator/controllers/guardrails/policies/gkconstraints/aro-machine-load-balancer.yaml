@@ -9,3 +9,5 @@ spec:
     kinds:
       - apiGroups: ["machine.openshift.io"]
         kinds: ["MachineSet"]
+  parameters:
+    loadBalancerName: {{.InfraID}}

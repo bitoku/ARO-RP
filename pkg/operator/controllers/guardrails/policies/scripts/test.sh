@@ -21,8 +21,9 @@ usage() {
 expand_constraint() {
   local file=$1
   echo "expand constraints $file"
-  filename="$(basename -- ${file})"
-  sed 's/{{.Enforcement}}/deny/g' $file > $constraint_test_path/$filename
+  filename="$(basename -- "$file")"
+  sed 's/{{.Enforcement}}/deny/g' "$file" |
+  sed 's/{{.InfraID}}/testCluster-xxxxx/g' > $constraint_test_path/"$filename"
 }
 
 expand_all_constraints() {

@@ -349,7 +349,7 @@ func (c *Cluster) generateSubnets() (vnetPrefix string, masterSubnet string, wor
 	rand.Seed(time.Now().UnixNano())
 	// Local Dev clusters are limited to /16 dev-vnet
 	if !c.ci {
-		x, y = 0, 2*rand.Intn(128)
+		x, y = 0, 160
 	} else {
 		x, y = rand.Intn((124))+3, 2*rand.Intn(128)
 	}

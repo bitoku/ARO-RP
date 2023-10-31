@@ -39,7 +39,7 @@ request:
                   storageAccountType: Premium_LRS
                 osType: Linux
               networkResourceGroup: networkrg
-              publicLoadBalancer: testCluster
+              publicLoadBalancer: testCluster-xxxxx
               userDataSecret:
                 name: worker-user-data
               vnet: testvnet

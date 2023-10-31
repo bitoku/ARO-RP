@@ -16,8 +16,9 @@ spec:
         # Schema for the `parameters` field
         openAPIV3Schema:
           type: object
-          description: >-
-            Disallows modifying machine load balancer.
+          properties:
+            loadBalancerName:
+              type: string
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
